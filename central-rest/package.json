@@ -1,0 +1,16 @@
+{
+  "name": "central-rest",
+  "version": "0.0.1",
+  "description": "Hub api rest",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Raúl Pera Pairó",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "request": "^2.81.0"
+  }
+}
