@@ -1,11 +1,16 @@
 
 package hefesto.Maps;
 
+import hefesto.Maps.PuntoAltitud.estado;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 /**
  *
@@ -24,6 +29,14 @@ public class Mapa {
 
     //Zoom del mapa
     private int mapZoom = 19;
+    
+    protected static final int numPredicciones = 60;
+    
+    protected static final int umbral = 50; // % de por encima pasa a fuego
+    
+    private List<PuntoAltitud> estadoActual;
+    
+    private List<Pair> estadosPrediccion;
     
     /**
      * Constructor por defecto
@@ -192,4 +205,41 @@ public class Mapa {
      * @return Retorna el numero de columnas de la matriz
      */
     public int getColumnas(){return columnas;}
+    
+    public List<PuntoAltitud> getFuego(){
+       if (estadoActual != null)    
+           return estadoActual;
+       else
+           estadoActual = iniciaFuegoActual();
+       return estadoActual;
+    }
+    
+    public List<PuntoAltitud> iniciaFuegoActual() {
+        Random rand = new Random();
+        double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
+        double randCordY = rand.nextDouble()*filas + mapa[0][0].getY();
+        List<PuntoAltitud> list = new ArrayList<>();
+        PuntoAltitud punto = mapa[Math.round(columnas/2)][Math.round(filas/2)].getPunto(5, 5);
+        punto.estatus = estado.ardiendo;
+        list.add(punto);
+        
+        return list;
+    }
+    
+    public void itera(){
+        predict(); // la primera llamada es con t0(actual) para 
+                   //llenar el primero de la lista de prediccion en t1
+        for (int it = 0; it < numPredicciones - 1; it++){ // t1 ya esta calculada, hay que hacer 59 mas
+            for (int j = estadosPrediccion.size() - 1; j >= 0; j--){ // recorremos en inverso porque 
+                if (estadosPrediccion.get(j).getTiempo() != numPredicciones - 1) // los ultimos añadidos son los del instante anterior 
+                    break; // cuando encontremos un punto que es < que (t - 1) paramos porque no son relevantes
+                else
+                    predict(); // si no calculamos con respecto a punto actual
+            }
+        }
+    }
+    
+    public void predict() {
+        
+    }
 }
