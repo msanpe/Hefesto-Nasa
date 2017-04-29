@@ -1,6 +1,7 @@
 
 package hefesto.Maps;
 
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -22,9 +23,7 @@ public class MapJFrame extends JFrame {
         MapCanvas canvas = new MapCanvas(w, h);
         add(canvas);
         map = map_;
-
         this.setVisible(true);
-
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(e -> {
                     if (e.getID() != KeyEvent.KEY_PRESSED) return false;
@@ -45,34 +44,43 @@ public class MapJFrame extends JFrame {
                     paintMaps(canvas);
                     return false;
                 });
-
         new Thread(() -> paintMaps(canvas)).start();
     }
 
     private void paintMaps(MapCanvas canvas) {
-        int x = 768;
-        int y = 900;
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                System.out.println("imagen " + i + "," + j + "  ");
+        System.out.println("paintmaps");
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 6; j++) {
+                //System.out.println("imagen " + i + "," + j + "  ");
                 canvas.paint(map.getImagen(i + y_offset, j + x_offset), 256 * j, 256 * i);
             }
         }
         canvas.repaint();
-        drawPoint(canvas, x_offset, y_offset, x, y);
+        if (map.getEstadoActual().size() == 0) System.out.println("No hay fuegos");
+        for (int i=0;i<map.getEstadoActual().size();i++){
+            drawPoint(canvas, map.getEstadoActual().get(i).x, map.getEstadoActual().get(i).y, Color.red);
+        }
     }
 
-    private void drawPoint(MapCanvas canvas, int x_offset, int y_offset, int x, int y) {
-        int size = 5;
+    private void drawPoint(MapCanvas canvas, double x_, double y_, Color c) {
+        int size = 25;
+
+        int x = (int)((x_ - map.mapa[0][0].getX())*256);
+        int y = (int)((y_ - map.mapa[0][0].getY())*256);
+
+        System.out.println("X: "+ x_+" Y: "+ y_ + " calculado a x: "+x+ " y: "+y);
+
         BufferedImage bimage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = bimage.createGraphics();
-        g2d.setColor(Color.red);
+        g2d.setColor(c);
         g2d.fill(new Rectangle2D.Float(0, 0, size, size));
         g2d.dispose();
         int rel_x = x - x_offset * 256,
                 rel_y = y - y_offset * 256;
-        if (rel_x >= 0 && rel_x <= 768 && rel_y >= 0 && rel_y <= 512) {
-            canvas.paint(bimage, rel_y, rel_x);
+        if (rel_x >= 0 && rel_x <= 1536 && rel_y >= 0 && rel_y <= 768) {
+            //System.out.println("Pinto en (" + rel_x + "," + rel_y + ")");
+            canvas.paint(bimage, Math.max(0, rel_x-size), Math.max(0, rel_y-size));
+            canvas.repaint();
         } else {
             System.out.println("No pinto");
         }

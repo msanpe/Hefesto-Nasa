@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Hefesto-Nasa.iml" filepath="$PROJECT_DIR$/.idea/Hefesto-Nasa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Hefesto/Hefesto.iml" filepath="$PROJECT_DIR$/Hefesto/Hefesto.iml" />
     </modules>
   </component>
 </project>

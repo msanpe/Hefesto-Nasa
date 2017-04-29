@@ -24,7 +24,7 @@ public class Mapa extends Thread{
     
     //Numero de filas
     private int filas = 0;
-    
+
     //Numero de columnas
     private int columnas = 0;
 
@@ -32,15 +32,19 @@ public class Mapa extends Thread{
     private int mapZoom = 19;
     
     private static long Tiempo = 5000;
-    
+
     private boolean running = false;
-    
+
     protected static final int numPredicciones = 60;
     
     protected static final int umbral = 50; // % de por encima pasa a fuego
     
     private List<PuntoAltitud> estadoActual;
-    
+
+    public List<PuntoAltitud> getEstadoActual() {
+        return estadoActual;
+    }
+
     private List[] predicciones;
     
     /**
@@ -50,8 +54,8 @@ public class Mapa extends Thread{
         mapa = new Tile[0][];
         creaPredicciones();
     }
-    
-    
+
+
     private void creaPredicciones(){
         predicciones = new ArrayList[numPredicciones];
         for (int i=0;i<numPredicciones;i++){
@@ -235,18 +239,20 @@ public class Mapa extends Thread{
         double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
         double randCordY = rand.nextDouble()*filas + mapa[0][0].getY();
         List<PuntoAltitud> list = new ArrayList<>();
-        PuntoAltitud punto = mapa[Math.round(columnas/2)][Math.round(filas/2)].getPunto(5, 5);
+        PuntoAltitud punto = mapa[1][1].getPunto(5, 5);
         punto.estatus = estado.ardiendo;
         list.add(punto);
         
         return list;
     }
-    
+
+
+
     public void parar(){
         running = false;
     }
-    
-    
+
+
     public void run(){
         running = true;
         System.out.println("Init fuegos");
@@ -260,14 +266,14 @@ public class Mapa extends Thread{
             tick();
         }
     }
-    
+
     public void tick() {
         System.out.println("Tick");
         iteraPrediccion();
         actualizarMapaZonaAfectada();
         estadoActual = predicciones[1];
     }
-    
+
     private void actualizarMapaZonaAfectada(){
         for (int i=0;i<predicciones[0].size();i++){
             getPuntoAltitud( ((PuntoAltitud)predicciones[0].get(i)).x, ((PuntoAltitud)predicciones[0].get(i)).y).estatus = estado.quemado;
@@ -276,13 +282,13 @@ public class Mapa extends Thread{
             getPuntoAltitud( ((PuntoAltitud)predicciones[1].get(i)).x, ((PuntoAltitud)predicciones[1].get(i)).y).estatus = estado.ardiendo;
         }
     }
-    
+
     public void iteraPrediccion(){
         List<PuntoAltitud> aux = new ArrayList<>();
         predicciones[0] = new ArrayList<>(estadoActual);
         for (int i = 1; i < numPredicciones; i++) {
             for (int j = 0; j < predicciones[i].size(); j++) {
-                
+
                 predict((PuntoAltitud)predicciones[i - 1].get(j), aux);
             }
             predicciones[i] = new ArrayList<>(aux);
@@ -298,7 +304,7 @@ public class Mapa extends Thread{
         double yini = mapa[0][0].getY();
         //double xfin = mapa[0][columnas-1].getX()+1;
         //double yfin = mapa[filas-1][0].getY()+1;
-        
+
         return mapa[(int)Math.round(y - yini)][(int) Math.round(x - xini) ].getPuntoAltitud(x, y);
     }
     
@@ -311,7 +317,7 @@ public class Mapa extends Thread{
         double yfin = mapa[filas-1][0].getY()+1;
         return mapa[(int)Math.round(y - yini)][(int) Math.round(x - xini) ].getAltitud(x, y);
     }
-    
+
     public void predict(PuntoAltitud punto, List<PuntoAltitud> list) {
         double mialtitud = punto.altitud;
         double velViento = Viento.getF();
@@ -338,10 +344,10 @@ public class Mapa extends Thread{
         double desX = Viento.getvx()/Viento.getvy() * Viento.getF();
         if (Viento.getvx()* desX < 0)  desX = desX *-1;
         if (Viento.getvy()* desY < 0)  desY = desY *-1;
-        
-        
+
+
         int distancia = (int)Math.round(velViento + 1);
-        
+
         for (double itX = punto.x - 0.1*distancia; itX < punto.x+0.1*distancia+0.1;itX+=0.1){
             for (double itY = punto.y - 0.1*distancia; itY < punto.y+0.1*distancia+0.1;itY+=0.1){
                 double distanciaX = Utils.roundDouble(itX - punto.x, 1) *10;

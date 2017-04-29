@@ -37,7 +37,7 @@ public class MapCanvas extends Canvas{
     }
     
     public void paint(BufferedImage img, int offx, int offy){
-        System.out.println("" + img.getWidth() + " " + img.getHeight());
+//        System.out.println("" + img.getWidth() + " " + img.getHeight());
         for (int x = 0;x<img.getWidth();x++)
             for (int y=0;y<img.getHeight();y++){
                 imagen.setRGB(offx+x, offy+y, img.getRGB(x, y));
