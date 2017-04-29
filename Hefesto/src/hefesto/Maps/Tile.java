@@ -92,20 +92,7 @@ public class Tile {
      */
     private void refreshImage(){
         imagen = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-        while(downloadThread >= MaxDownloadThread){
-            try {
-                sleep(1);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Tile.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        Thread T = new Thread(){
-            public void run(){
-                imagen = getStaticMap(x, y, zoom, 256);
-            }
-        };
-        downloadThread++;
-        T.start();        
+        imagen = getStaticMap(x, y, zoom, 256);
     }
 
     /**

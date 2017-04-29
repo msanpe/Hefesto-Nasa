@@ -4,6 +4,9 @@ package hefesto;
 import hefesto.Maps.MapJFrame;
 import hefesto.Maps.Mapa;
 
+import java.io.File;
+import java.io.PrintWriter;
+
 /**
  * @author Jose Vicente
  */
@@ -23,9 +26,9 @@ public class Hefesto {
             //m.refreshFromGoogle();
             //m.saveToFile("mimapa.map");
 
-            Mapa m2 = Mapa.loadFromFile("mapaMarines.map");
-            new MapJFrame(1000, 700, m2);
-            
+            Mapa m2 = Mapa.loadFromFile("Hefesto/mapaMarines.map");
+            new MapJFrame(768, 512, m2);
+
 
         }
             catch(Exception e){
