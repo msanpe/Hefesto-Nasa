@@ -12,6 +12,12 @@ import java.awt.image.BufferedImage;
  * @author Jose Vicente Lozano Copa
  */
 public class MapJFrame extends JFrame {
+    private static final String COLOR_01 = "F44336";
+    private static final String COLOR_02 = "FF5722";
+    private static final String COLOR_03 = "FF9800";
+    private static final String COLOR_04 = "FFD54F";
+    private static final String COLOR_05 = "FFF176";
+
     private Mapa map;
     private int x_offset, y_offset;
 
@@ -58,8 +64,8 @@ public class MapJFrame extends JFrame {
     }
 
     private void paintMaps(MapCanvas canvas) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 6; j++) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 7; j++) {
                 //System.out.println("imagen " + i + "," + j + "  ");
                 canvas.paint(map.getImagen(i + y_offset, j + x_offset), 256 * j, 256 * i);
             }
@@ -101,7 +107,7 @@ public class MapJFrame extends JFrame {
         g2d.dispose();
         int rel_x = x - x_offset * 256,
                 rel_y = y - y_offset * 256;
-        if (rel_x >= 0 && rel_x <= 1536 && rel_y >= 0 && rel_y <= 768) {
+        if (rel_x >= 0 && rel_x <= 1792 && rel_y >= 0 && rel_y <= 1024) {
             canvas.paint(bimage, Math.max(0, rel_x-size), Math.max(0, rel_y-size));
             canvas.repaint();
         } else {

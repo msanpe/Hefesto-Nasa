@@ -31,7 +31,7 @@ public class Hefesto {
             Mapa m2 = Mapa.loadFromFile("mapaMarines.map");
             //Mapa m2 = Mapa.loadFromFile("Hefesto/mapaMarines.map");
             m2.start();
-            new MapJFrame(1536+17, 768+40, m2);
+            new MapJFrame(1792+17, 1024+40, m2);
         }
             catch(Exception e){
             System.out.println("Error: "+e.toString());}
