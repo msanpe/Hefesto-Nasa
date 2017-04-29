@@ -228,10 +228,23 @@ public class Mapa {
         return list;
     }
     
-    public void iteraPrediccion(){
+    public void tick() {
+        iteraPrediccion();
+        // actualizarMapaZonaAfectada
+        // t0 = t1
 
-        for (int i = 0; i < numPredicciones; i++) {
-            
+    }
+    
+    public void iteraPrediccion(){
+        List<PuntoAltitud> aux = new ArrayList<>();
+        predicciones[0] = new ArrayList<>(estadoActual);
+
+        for (int i = 1; i <= numPredicciones; i++) {
+            for (int j = 0; i < predicciones[i].size(); i++) {
+                predict((PuntoAltitud)predicciones[i - 1].get(j), aux);
+            }
+            predicciones[i] = aux;
+            aux.clear();
         }
     }
 
