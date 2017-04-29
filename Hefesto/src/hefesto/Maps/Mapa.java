@@ -36,13 +36,14 @@ public class Mapa {
     
     private List<PuntoAltitud> estadoActual;
     
-    private List<Pair> estadosPrediccion;
+    private List[] predicciones;
     
     /**
      * Constructor por defecto
      */
     public Mapa(){
         mapa = new Tile[0][];
+        predicciones = new ArrayList[numPredicciones];
     }
     
     
@@ -214,7 +215,7 @@ public class Mapa {
        return estadoActual;
     }
     
-    public List<PuntoAltitud> iniciaFuegoActual() {
+    public List<PuntoAltitud> iniciaFuegoActual() {           
         Random rand = new Random();
         double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
         double randCordY = rand.nextDouble()*filas + mapa[0][0].getY();
@@ -226,20 +227,28 @@ public class Mapa {
         return list;
     }
     
-    public void itera(){
-        predict(); // la primera llamada es con t0(actual) para 
+    public void iteraPrediccion(){
+
+        for (int i = 0; i < numPredicciones; i++) {
+            
+        }
+        
+        List<Pair> aux = new ArrayList<>();
+        for (int i = 0; i < estadoActual.size(); i++)
+            predict(estadoActual.get(i), estadosPrediccion); // la primera llamada es con t0(actual) para 
                    //llenar el primero de la lista de prediccion en t1
-        for (int it = 0; it < numPredicciones - 1; it++){ // t1 ya esta calculada, hay que hacer 59 mas
+        for (int it = 2; it < numPredicciones+1; it++){ // t1 ya esta calculada, hay que hacer 59 mas
             for (int j = estadosPrediccion.size() - 1; j >= 0; j--){ // recorremos en inverso porque 
                 if (estadosPrediccion.get(j).getTiempo() != numPredicciones - 1) // los ultimos añadidos son los del instante anterior 
                     break; // cuando encontremos un punto que es < que (t - 1) paramos porque no son relevantes
                 else
-                    predict(); // si no calculamos con respecto a punto actual
+                    predict(estadosPrediccion.get(j), aux); // si no calculamos con respecto a punto actual
             }
+            for 
         }
     }
     
-    public void predict() {
+    public void predict(PuntoAltitud punto, List<Pair> list) {
         
     }
 }
