@@ -35,7 +35,7 @@ public class Mapa extends Thread{
 
     private boolean running = false;
 
-    protected static final int numPredicciones = 60;
+    protected static final int numPredicciones = 20;
     
     protected static final int umbral = 50; // % de por encima pasa a fuego
     
@@ -268,28 +268,38 @@ public class Mapa extends Thread{
     }
 
     public void tick() {
-        System.out.println("Tick");
+       // System.out.println("Tick");
         iteraPrediccion();
         actualizarMapaZonaAfectada();
         estadoActual = predicciones[1];
+        System.out.println("Fuegos de estadoactual: " + estadoActual.size());
+
     }
 
     private void actualizarMapaZonaAfectada(){
+
         for (int i=0;i<predicciones[0].size();i++){
             getPuntoAltitud( ((PuntoAltitud)predicciones[0].get(i)).x, ((PuntoAltitud)predicciones[0].get(i)).y).estatus = estado.quemado;
+            predicciones[1].remove(((PuntoAltitud)predicciones[0].get(i) ));
         }
         for (int i=0;i<predicciones[1].size();i++){
             getPuntoAltitud( ((PuntoAltitud)predicciones[1].get(i)).x, ((PuntoAltitud)predicciones[1].get(i)).y).estatus = estado.ardiendo;
         }
+
     }
 
     public void iteraPrediccion(){
         List<PuntoAltitud> aux = new ArrayList<>();
         predicciones[0] = new ArrayList<>(estadoActual);
+ //       System.out.println("itera, tengo "+predicciones[0].size()+ " elementos");
+
         for (int i = 1; i < numPredicciones; i++) {
-            for (int j = 0; j < predicciones[i].size(); j++) {
+            System.out.println(i);
+            for (int j = 0; j < predicciones[i-1].size(); j++) {
+//                System.out.println("Predict para i= "+i+ " y j="+j);
 
                 predict((PuntoAltitud)predicciones[i - 1].get(j), aux);
+
             }
             predicciones[i] = new ArrayList<>(aux);
             aux.clear();
@@ -297,14 +307,11 @@ public class Mapa extends Thread{
     }
 
 
-    private PuntoAltitud getPuntoAltitud(double x, double y){
+    public PuntoAltitud getPuntoAltitud(double x, double y){
         if (x < mapa[0][0].getX() || x > mapa[0][columnas-1].getX()+1) return null;
         if (y < mapa[0][0].getY() || y > mapa[filas-1][0].getY()+1) return null;
         double xini = mapa[0][0].getX();
         double yini = mapa[0][0].getY();
-        //double xfin = mapa[0][columnas-1].getX()+1;
-        //double yfin = mapa[filas-1][0].getY()+1;
-
         return mapa[(int)Math.round(y - yini)][(int) Math.round(x - xini) ].getPuntoAltitud(x, y);
     }
     
@@ -319,6 +326,7 @@ public class Mapa extends Thread{
     }
 
     public void predict(PuntoAltitud punto, List<PuntoAltitud> list) {
+        //System.out.println("Predict");
         double mialtitud = punto.altitud;
         double velViento = Viento.getF();
         double warriba = getAltitud(punto.x, punto.y-0.1) - mialtitud;
@@ -330,14 +338,14 @@ public class Mapa extends Thread{
         double wabader   = getAltitud(punto.x+0.1, punto.y+0.1) - mialtitud;
         double wabizq    = getAltitud(punto.x-0.1, punto.y+0.1) - mialtitud;
 
-        if (warriba > 0)    list.add(new PuntoAltitud(punto.x, punto.y-0.1));
-        if (wabajo > 0)    list.add(new PuntoAltitud(punto.x, punto.y+0.1));
-        if (wderecha > 0)    list.add(new PuntoAltitud(punto.x+0.1, punto.y));
-        if (wizquierda > 0)    list.add(new PuntoAltitud(punto.x-0.1, punto.y));
-        if (warrdere > 0)    list.add(new PuntoAltitud(punto.x+0.1, punto.y-0.1));
-        if (warrizq > 0)    list.add(new PuntoAltitud(punto.x-0.1, punto.y-0.1));
-        if (wabader > 0)    list.add(new PuntoAltitud(punto.x+0.1, punto.y+0.1));
-        if (wabizq > 0)    list.add(new PuntoAltitud(punto.x-0.1, punto.y+0.1));
+        if (warriba > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x, punto.y-0.1), this);
+        if (wabajo > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x, punto.y+0.1), this);
+        if (wderecha > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x+0.1, punto.y), this);
+        if (wizquierda > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x-0.1, punto.y), this);
+        if (warrdere > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x+0.1, punto.y-0.1), this);
+        if (warrizq > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x-0.1, punto.y-0.1), this);
+        if (wabader > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x+0.1, punto.y+0.1), this);
+        if (wabizq > 0)    Utils.addNotExists(list, new PuntoAltitud(punto.x-0.1, punto.y+0.1), this);
 
         
         double desY = Viento.getvy()/Viento.getvx() * Viento.getF();
@@ -356,10 +364,13 @@ public class Mapa extends Thread{
                 //coincidencia de direccion con el vector de viencio
                 if (desX * distanciaX >= 0 && desY * distanciaY >= 0){
                     if (Math.abs(desX+1) > Math.abs(distanciaX)  && Math.abs(desY+1) > Math.abs(distanciaY)){
-                        list.add(new PuntoAltitud(itX, itY));
+                        
+                        Utils.addNotExists(list, new PuntoAltitud(itX, itY), this);
+                        
                     }
                 }
             }
         }
+        //System.out.println("Prediccion de fuegos: " + list.size()+ " fuegos");
     }
 }

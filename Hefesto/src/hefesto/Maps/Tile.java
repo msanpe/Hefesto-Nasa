@@ -284,6 +284,9 @@ public class Tile {
     }
 
     public double getAltitud(double x, double y) {
+        if (x < this.x || x >= this.x +1 ) return 0; 
+        if (y < this.y || y >= this.y +1 ) return 0; 
+        
         double decx = (x - (int)x);
         double decy = (y - (int)y);
         int col = (int)Math.round(resolucionAltitud * decx);
