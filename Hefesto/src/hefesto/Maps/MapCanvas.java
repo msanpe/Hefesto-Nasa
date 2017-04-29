@@ -47,9 +47,10 @@ public class MapCanvas extends Canvas{
     @Override
     public void paint(Graphics g){
         g.drawImage(imagen, 0, 0, null);
-        
-       // g.setColor(Color.BLUE);
-       // g.drawRect(10, 10, 100, 100);
+    }
+
+    public void paint(Graphics g, int x, int y){
+        g.drawImage(imagen, x, y, null);
     }
 
     @Override
