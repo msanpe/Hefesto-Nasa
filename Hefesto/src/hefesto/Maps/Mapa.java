@@ -2,6 +2,7 @@
 package hefesto.Maps;
 
 import hefesto.Maps.PuntoAltitud.estado;
+import hefesto.Utils;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -232,49 +233,22 @@ public class Mapa {
         for (int i = 0; i < numPredicciones; i++) {
             
         }
-       /* 
-        List<Pair> aux = new ArrayList<>();
-        for (int i = 0; i < estadoActual.size(); i++)
-            predict(estadoActual.get(i), estadosPrediccion); // la primera llamada es con t0(actual) para 
-                   //llenar el primero de la lista de prediccion en t1
-        for (int it = 2; it < numPredicciones+1; it++){ // t1 ya esta calculada, hay que hacer 59 mas
-            for (int j = estadosPrediccion.size() - 1; j >= 0; j--){ // recorremos en inverso porque 
-                if (estadosPrediccion.get(j).getTiempo() != numPredicciones - 1) // los ultimos añadidos son los del instante anterior 
-                    break; // cuando encontremos un punto que es < que (t - 1) paramos porque no son relevantes
-                else
-                    predict(estadosPrediccion.get(j), aux); // si no calculamos con respecto a punto actual
-            }
-            for 
-        }
-*/
     }
-    
-    
+
+
     public double getAltitud(double x, double y){
-        
         if (x < mapa[0][0].getX() || x > mapa[0][columnas-1].getX()+1) return 0;
         if (y < mapa[0][0].getY() || y > mapa[filas-1][0].getY()+1) return 0;
-
         double xini = mapa[0][0].getX();
         double yini = mapa[0][0].getY();
         double xfin = mapa[0][columnas-1].getX()+1;
         double yfin = mapa[filas-1][0].getY()+1;
-  
-        
-        
         return mapa[(int)Math.round(y - yini)][(int) Math.round(x - xini) ].getAltitud(x, y);
-        
     }
     
     public void predict(PuntoAltitud punto, List<PuntoAltitud> list) {
-        
-        //Viento.getvx();
-        //Viento.getvy();
-
         double mialtitud = punto.altitud;
-
         double velViento = Viento.getF();
-        
         double warriba = getAltitud(punto.x, punto.y-0.1) - mialtitud;
         double wabajo  = getAltitud(punto.x, punto.y+0.1) - mialtitud;
         double wderecha = getAltitud(punto.x+0.1, punto.y) - mialtitud;
@@ -293,13 +267,27 @@ public class Mapa {
         if (wabader > 0)    list.add(new PuntoAltitud(punto.x+0.1, punto.y+0.1));
         if (wabizq > 0)    list.add(new PuntoAltitud(punto.x-0.1, punto.y+0.1));
 
-//        for (double desx=punto.x;desx <= punto.x + velViento; desx += 0.1){
-//            for (double desy = punto.y;desy <= punto.y + velViento; desy += 0.1){
-//                PuntoAltitud p = new PuntoAltitud(punto.x+desx, punto.y+desy);
-//            }
-//        }
         
-        //PuntoAltitud(x, y)
+        double desY = Viento.getvy()/Viento.getvx() * Viento.getF();
+        double desX = Viento.getvx()/Viento.getvy() * Viento.getF();
+        if (Viento.getvx()* desX < 0)  desX = desX *-1;
+        if (Viento.getvy()* desY < 0)  desY = desY *-1;
         
+        
+        int distancia = (int)Math.round(velViento + 1);
+        
+        for (double itX = punto.x - 0.1*distancia; itX < punto.x+0.1*distancia+0.1;itX+=0.1){
+            for (double itY = punto.y - 0.1*distancia; itY < punto.y+0.1*distancia+0.1;itY+=0.1){
+                double distanciaX = Utils.roundDouble(itX - punto.x, 1) *10;
+                double distanciaY = Utils.roundDouble(itY - punto.y, 1) *10;
+
+                //coincidencia de direccion con el vector de viencio
+                if (desX * distanciaX >= 0 && desY * distanciaY >= 0){
+                    if (Math.abs(desX+1) > Math.abs(distanciaX)  && Math.abs(desY+1) > Math.abs(distanciaY)){
+                        list.add(new PuntoAltitud(itX, itY));
+                    }
+                }
+            }
+        }
     }
 }

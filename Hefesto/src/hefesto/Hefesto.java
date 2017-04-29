@@ -3,9 +3,11 @@ package hefesto;
 
 import hefesto.Maps.MapJFrame;
 import hefesto.Maps.Mapa;
+import hefesto.Maps.PuntoAltitud;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * @author Jose Vicente
@@ -29,6 +31,8 @@ public class Hefesto {
             Mapa m2 = Mapa.loadFromFile("mapaMarines.map");
             //new MapJFrame(768, 512, m2);
 
+            m2.predict(new PuntoAltitud(1000, 1000), new ArrayList<PuntoAltitud>());
+            
         }
             catch(Exception e){
             System.out.println("Error: "+e.toString());}

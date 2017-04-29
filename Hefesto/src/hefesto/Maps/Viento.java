@@ -8,9 +8,9 @@ public class Viento {
     
     //Velocidad del viento en metros/s
     
-    private static double vx = 0.5;
+    private static double vx = -0.5;
     
-    private static double vy = 0.5;
+    private static double vy = 0.8;
     
     public static double getvx(){
         return vx;
