@@ -290,4 +290,12 @@ public class Tile {
         int row = (int)Math.round(resolucionAltitud * decy);
         return altitud[row][col].altitud;
     }
+
+    PuntoAltitud getPuntoAltitud(double x, double y) {
+        double decx = (x - (int)x);
+        double decy = (y - (int)y);
+        int col = (int)Math.round(resolucionAltitud * decx);
+        int row = (int)Math.round(resolucionAltitud * decy);
+        return altitud[row][col];
+    }
 }

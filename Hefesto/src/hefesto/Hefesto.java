@@ -29,9 +29,7 @@ public class Hefesto {
             //m.saveToFile("mimapa.map");
 
             Mapa m2 = Mapa.loadFromFile("mapaMarines.map");
-            //new MapJFrame(768, 512, m2);
-
-            m2.predict(new PuntoAltitud(1000, 1000), new ArrayList<PuntoAltitud>());
+            m2.start();
             
         }
             catch(Exception e){

@@ -17,7 +17,7 @@ import java.util.Random;
  *
  * @author user
  */
-public class Mapa {
+public class Mapa extends Thread{
 
     //Matriz de porciones del mapa
     protected Tile[][] mapa;
@@ -30,6 +30,10 @@ public class Mapa {
 
     //Zoom del mapa
     private int mapZoom = 19;
+    
+    private static long Tiempo = 5000;
+    
+    private boolean running = false;
     
     protected static final int numPredicciones = 60;
     
@@ -44,11 +48,20 @@ public class Mapa {
      */
     public Mapa(){
         mapa = new Tile[0][];
+        creaPredicciones();
+    }
+    
+    
+    private void creaPredicciones(){
         predicciones = new ArrayList[numPredicciones];
+        for (int i=0;i<numPredicciones;i++){
+            predicciones[i] = new ArrayList<PuntoAltitud>();
+        }
     }
     
     
     public Mapa(int fil, int col){
+        creaPredicciones();
         filas = fil; columnas = col; ;
         mapa = new Tile[filas][];
         for (int i=0;i<filas;i++){
@@ -68,6 +81,7 @@ public class Mapa {
      * @param zoom      Nivel de zoom (1 toda la tierra, 20 zoom maximo)
      */
     public Mapa(double latini, double lonini, double latfin, double lonfin, int zoom){
+        creaPredicciones();
         mapZoom = zoom;
         Point pini = Tile.calcTileFromLonLat(new RealPoint(latini, lonini), zoom);
         Point pfin = Tile.calcTileFromLonLat(new RealPoint(latfin, lonfin), zoom);
@@ -208,7 +222,7 @@ public class Mapa {
      */
     public int getColumnas(){return columnas;}
     
-    public List<PuntoAltitud> getFuego(){
+    public List<PuntoAltitud> initFuegos(){
        if (estadoActual != null)    
            return estadoActual;
        else
@@ -228,27 +242,66 @@ public class Mapa {
         return list;
     }
     
-    public void tick() {
-        iteraPrediccion();
-        // actualizarMapaZonaAfectada
-        // t0 = t1
+    public void parar(){
+        running = false;
+    }
+    
+    
+    public void run(){
+        running = true;
+        System.out.println("Init fuegos");
+        initFuegos();
 
+        System.out.println("running");
+        while(running){
+            try{
+                sleep(Tiempo);
+            }catch(Exception e){}
+            tick();
+        }
+    }
+    
+    public void tick() {
+        System.out.println("Tick");
+        iteraPrediccion();
+        actualizarMapaZonaAfectada();
+        estadoActual = predicciones[1];
+    }
+    
+    private void actualizarMapaZonaAfectada(){
+        for (int i=0;i<predicciones[0].size();i++){
+            getPuntoAltitud( ((PuntoAltitud)predicciones[0].get(i)).x, ((PuntoAltitud)predicciones[0].get(i)).y).estatus = estado.quemado;
+        }
+        for (int i=0;i<predicciones[1].size();i++){
+            getPuntoAltitud( ((PuntoAltitud)predicciones[1].get(i)).x, ((PuntoAltitud)predicciones[1].get(i)).y).estatus = estado.ardiendo;
+        }
     }
     
     public void iteraPrediccion(){
         List<PuntoAltitud> aux = new ArrayList<>();
         predicciones[0] = new ArrayList<>(estadoActual);
-
-        for (int i = 1; i <= numPredicciones; i++) {
-            for (int j = 0; i < predicciones[i].size(); i++) {
+        for (int i = 1; i < numPredicciones; i++) {
+            for (int j = 0; j < predicciones[i].size(); j++) {
+                
                 predict((PuntoAltitud)predicciones[i - 1].get(j), aux);
             }
-            predicciones[i] = aux;
+            predicciones[i] = new ArrayList<>(aux);
             aux.clear();
         }
     }
 
 
+    private PuntoAltitud getPuntoAltitud(double x, double y){
+        if (x < mapa[0][0].getX() || x > mapa[0][columnas-1].getX()+1) return null;
+        if (y < mapa[0][0].getY() || y > mapa[filas-1][0].getY()+1) return null;
+        double xini = mapa[0][0].getX();
+        double yini = mapa[0][0].getY();
+        //double xfin = mapa[0][columnas-1].getX()+1;
+        //double yfin = mapa[filas-1][0].getY()+1;
+        
+        return mapa[(int)Math.round(y - yini)][(int) Math.round(x - xini) ].getPuntoAltitud(x, y);
+    }
+    
     public double getAltitud(double x, double y){
         if (x < mapa[0][0].getX() || x > mapa[0][columnas-1].getX()+1) return 0;
         if (y < mapa[0][0].getY() || y > mapa[filas-1][0].getY()+1) return 0;
