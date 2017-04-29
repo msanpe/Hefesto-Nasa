@@ -15,13 +15,23 @@ public class MapCanvas extends Canvas{
     
     public int WIDTH;
     public int HEIGHT;
+    private int margenx;
+    private int margeny;
+
 
     BufferedImage imagen;
     
     public MapCanvas(int w, int h){
         WIDTH = w;
         HEIGHT = h;
-        Dimension size = new Dimension (WIDTH, HEIGHT);
+
+
+
+        Dimension size = new Dimension (WIDTH*2, HEIGHT*2);
+
+        margenx = Math.round(WIDTH/2) * -1;
+        margeny = Math.round(HEIGHT/2) * -1;
+
         setPreferredSize(size);
         imagen = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     }
@@ -31,7 +41,6 @@ public class MapCanvas extends Canvas{
         for (int x = 0;x<img.getWidth();x++)
             for (int y=0;y<img.getHeight();y++){
                 imagen.setRGB(offx+x, offy+y, img.getRGB(x, y));
-               
             }
     }
     
@@ -41,5 +50,14 @@ public class MapCanvas extends Canvas{
         
        // g.setColor(Color.BLUE);
        // g.drawRect(10, 10, 100, 100);
+    }
+
+    @Override
+    public String toString() {
+        return "MapCanvas{" +
+                "WIDTH=" + WIDTH +
+                ", HEIGHT=" + HEIGHT +
+                ", imagen=" + imagen +
+                '}';
     }
 }
