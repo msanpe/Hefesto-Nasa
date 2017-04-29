@@ -31,7 +31,7 @@ public class Mapa extends Thread{
     //Zoom del mapa
     private int mapZoom = 19;
     
-    private static long Tiempo = 5000;
+    private static long Tiempo = 8000;
 
     private boolean running = false;
 
@@ -106,7 +106,6 @@ public class Mapa extends Thread{
             }
         }
         
-        System.out.println("Creado mapa de "+filas+" filas y "+columnas+" columnas");
     }
 
     /**
@@ -239,7 +238,7 @@ public class Mapa extends Thread{
         double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
         double randCordY = rand.nextDouble()*filas + mapa[0][0].getY();
         List<PuntoAltitud> list = new ArrayList<>();
-        PuntoAltitud punto = mapa[1][1].getPunto(5, 5);
+        PuntoAltitud punto = mapa[2][5].getPunto(5, 5);
         punto.estatus = estado.ardiendo;
         list.add(punto);
         
@@ -255,10 +254,8 @@ public class Mapa extends Thread{
 
     public void run(){
         running = true;
-        System.out.println("Init fuegos");
         initFuegos();
 
-        System.out.println("running");
         while(running){
             try{
                 sleep(Tiempo);
@@ -291,15 +288,15 @@ public class Mapa extends Thread{
     public void iteraPrediccion(){
         List<PuntoAltitud> aux = new ArrayList<>();
         predicciones[0] = new ArrayList<>(estadoActual);
- //       System.out.println("itera, tengo "+predicciones[0].size()+ " elementos");
-
+ 
         for (int i = 1; i < numPredicciones; i++) {
-            System.out.println(i);
+            //System.out.println(i);
             for (int j = 0; j < predicciones[i-1].size(); j++) {
-//                System.out.println("Predict para i= "+i+ " y j="+j);
-
                 predict((PuntoAltitud)predicciones[i - 1].get(j), aux);
-
+                for (int d = aux.size()-1;d>=0;d--){
+                    if (predicciones[i-1].contains(aux.get(d)))
+                        aux.remove(d);
+                }
             }
             predicciones[i] = new ArrayList<>(aux);
             aux.clear();
@@ -323,6 +320,10 @@ public class Mapa extends Thread{
         double xfin = mapa[0][columnas-1].getX()+1;
         double yfin = mapa[filas-1][0].getY()+1;
         return mapa[(int)Math.round(y - yini)][(int) Math.round(x - xini) ].getAltitud(x, y);
+    }
+    
+    public List<PuntoAltitud> getPrediccion(int i){
+        return predicciones[i];
     }
 
     public void predict(PuntoAltitud punto, List<PuntoAltitud> list) {
@@ -362,7 +363,7 @@ public class Mapa extends Thread{
                 double distanciaY = Utils.roundDouble(itY - punto.y, 1) *10;
 
                 //coincidencia de direccion con el vector de viencio
-                if (desX * distanciaX >= 0 && desY * distanciaY >= 0){
+                if (desX * distanciaX >= 0 && desY * distanciaY >= 0) {
                     if (Math.abs(desX+1) > Math.abs(distanciaX)  && Math.abs(desY+1) > Math.abs(distanciaY)){
                         
                         Utils.addNotExists(list, new PuntoAltitud(itX, itY), this);

@@ -44,11 +44,20 @@ public class MapJFrame extends JFrame {
                     paintMaps(canvas);
                     return false;
                 });
-        new Thread(() -> paintMaps(canvas)).start();
+        
+        new Thread() {
+            public void run(){
+                while(true){
+                    try{
+                        sleep(3000);
+                    }catch(Exception e){}
+                    paintMaps(canvas);
+                }
+            }
+        }.start();
     }
 
     private void paintMaps(MapCanvas canvas) {
-        System.out.println("paintmaps");
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 6; j++) {
                 //System.out.println("imagen " + i + "," + j + "  ");
@@ -56,10 +65,26 @@ public class MapJFrame extends JFrame {
             }
         }
         canvas.repaint();
-        if (map.getEstadoActual().size() == 0) System.out.println("No hay fuegos");
-        for (int i=0;i<map.getEstadoActual().size();i++){
-            drawPoint(canvas, map.getEstadoActual().get(i).x, map.getEstadoActual().get(i).y, Color.red);
+        
+
+        List<PuntoAltitud> mas1 = map.getPrediccion(2);
+        for (int i=0;i<mas1.size();i++){
+            drawPoint(canvas, mas1.get(i).x, mas1.get(i).y, Color.ORANGE);
         }
+
+        /*List<PuntoAltitud> mas2 = map.getPrediccion(3);
+        for (int i=0;i<mas2.size();i++){
+            drawPoint(canvas, mas2.get(i).x, mas2.get(i).y, Color.BLUE);
+        }
+        List<PuntoAltitud> mas3 = map.getPrediccion(4);
+        for (int i=0;i<mas3.size();i++){
+            drawPoint(canvas, mas3.get(i).x, mas3.get(i).y, Color.GREEN);
+        }*/
+        
+        for (int i=0;i<map.getEstadoActual().size();i++){
+            drawPoint(canvas, map.getEstadoActual().get(i).x, map.getEstadoActual().get(i).y, new Color(255,0,0,100));
+        }
+        
     }
 
     private void drawPoint(MapCanvas canvas, double x_, double y_, Color c) {
@@ -68,8 +93,7 @@ public class MapJFrame extends JFrame {
         int x = (int)((x_ - map.mapa[0][0].getX())*256);
         int y = (int)((y_ - map.mapa[0][0].getY())*256);
 
-        System.out.println("X: "+ x_+" Y: "+ y_ + " calculado a x: "+x+ " y: "+y);
-
+  
         BufferedImage bimage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = bimage.createGraphics();
         g2d.setColor(c);
@@ -78,11 +102,10 @@ public class MapJFrame extends JFrame {
         int rel_x = x - x_offset * 256,
                 rel_y = y - y_offset * 256;
         if (rel_x >= 0 && rel_x <= 1536 && rel_y >= 0 && rel_y <= 768) {
-            //System.out.println("Pinto en (" + rel_x + "," + rel_y + ")");
             canvas.paint(bimage, Math.max(0, rel_x-size), Math.max(0, rel_y-size));
             canvas.repaint();
         } else {
-            System.out.println("No pinto");
+            //System.out.println("No pinto");
         }
     }
 
