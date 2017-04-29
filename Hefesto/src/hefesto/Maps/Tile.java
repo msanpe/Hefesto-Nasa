@@ -282,4 +282,12 @@ public class Tile {
     public int getY() {
         return y;
     }
+
+    public double getAltitud(double x, double y) {
+        double decx = (x - (int)x);
+        double decy = (y - (int)y);
+        int col = (int)Math.round(resolucionAltitud * decx);
+        int row = (int)Math.round(resolucionAltitud * decy);
+        return altitud[row][col].altitud;
+    }
 }

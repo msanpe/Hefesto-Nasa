@@ -26,9 +26,8 @@ public class Hefesto {
             //m.refreshFromGoogle();
             //m.saveToFile("mimapa.map");
 
-            Mapa m2 = Mapa.loadFromFile("Hefesto/mapaMarines.map");
-            new MapJFrame(768, 512, m2);
-
+            Mapa m2 = Mapa.loadFromFile("mapaMarines.map");
+            //new MapJFrame(768, 512, m2);
 
         }
             catch(Exception e){
