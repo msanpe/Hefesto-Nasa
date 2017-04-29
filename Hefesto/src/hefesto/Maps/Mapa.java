@@ -232,7 +232,7 @@ public class Mapa {
         for (int i = 0; i < numPredicciones; i++) {
             
         }
-        
+       /* 
         List<Pair> aux = new ArrayList<>();
         for (int i = 0; i < estadoActual.size(); i++)
             predict(estadoActual.get(i), estadosPrediccion); // la primera llamada es con t0(actual) para 
@@ -246,9 +246,60 @@ public class Mapa {
             }
             for 
         }
+*/
     }
     
-    public void predict(PuntoAltitud punto, List<Pair> list) {
+    
+    public double getAltitud(double x, double y){
+        
+        if (x < mapa[0][0].getX() || x > mapa[0][columnas-1].getX()+1) return 0;
+        if (y < mapa[0][0].getY() || y > mapa[filas-1][0].getY()+1) return 0;
+
+        double xini = mapa[0][0].getX();
+        double yini = mapa[0][0].getY();
+        double xfin = mapa[0][columnas-1].getX()+1;
+        double yfin = mapa[filas-1][0].getY()+1;
+  
+        
+        
+        return mapa[(int)Math.round(y - yini)][(int) Math.round(x - xini) ].getAltitud(x, y);
+        
+    }
+    
+    public void predict(PuntoAltitud punto, List<PuntoAltitud> list) {
+        
+        //Viento.getvx();
+        //Viento.getvy();
+
+        double mialtitud = punto.altitud;
+
+        double velViento = Viento.getF();
+        
+        double warriba = getAltitud(punto.x, punto.y-0.1) - mialtitud;
+        double wabajo  = getAltitud(punto.x, punto.y+0.1) - mialtitud;
+        double wderecha = getAltitud(punto.x+0.1, punto.y) - mialtitud;
+        double wizquierda  = getAltitud(punto.x-0.1, punto.y) - mialtitud;
+        double warrdere  = getAltitud(punto.x+0.1, punto.y-0.1) - mialtitud;
+        double warrizq   = getAltitud(punto.x-0.1, punto.y-0.1) - mialtitud;
+        double wabader   = getAltitud(punto.x+0.1, punto.y+0.1) - mialtitud;
+        double wabizq    = getAltitud(punto.x-0.1, punto.y+0.1) - mialtitud;
+
+        if (warriba > 0)    list.add(new PuntoAltitud(punto.x, punto.y-0.1));
+        if (wabajo > 0)    list.add(new PuntoAltitud(punto.x, punto.y+0.1));
+        if (wderecha > 0)    list.add(new PuntoAltitud(punto.x+0.1, punto.y));
+        if (wizquierda > 0)    list.add(new PuntoAltitud(punto.x-0.1, punto.y));
+        if (warrdere > 0)    list.add(new PuntoAltitud(punto.x+0.1, punto.y-0.1));
+        if (warrizq > 0)    list.add(new PuntoAltitud(punto.x-0.1, punto.y-0.1));
+        if (wabader > 0)    list.add(new PuntoAltitud(punto.x+0.1, punto.y+0.1));
+        if (wabizq > 0)    list.add(new PuntoAltitud(punto.x-0.1, punto.y+0.1));
+
+//        for (double desx=punto.x;desx <= punto.x + velViento; desx += 0.1){
+//            for (double desy = punto.y;desy <= punto.y + velViento; desy += 0.1){
+//                PuntoAltitud p = new PuntoAltitud(punto.x+desx, punto.y+desy);
+//            }
+//        }
+        
+        //PuntoAltitud(x, y)
         
     }
 }

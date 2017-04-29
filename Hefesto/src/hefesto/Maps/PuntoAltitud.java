@@ -12,6 +12,8 @@ public class PuntoAltitud {
     
     public estado estatus = estado.normal;  //0 normal, 1 fuego, 2 quemado, 3 no quemable 
     
+    public static double metros = 3;
+    
     public double x;
     
     public double y;
