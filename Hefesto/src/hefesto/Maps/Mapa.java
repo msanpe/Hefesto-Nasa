@@ -1,6 +1,7 @@
 
 package hefesto.Maps;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -151,7 +152,7 @@ public class Mapa {
         return mapa[row][col].getAltitud(5, 5);
     }*/
     
-    public byte[] getImagen(int row, int col){
+    public BufferedImage getImagen(int row, int col){
         if (row < 0 || row >= filas)    return null;
         if (col < 0 || col >= columnas) return null;
         return mapa[row][col].getImagen();

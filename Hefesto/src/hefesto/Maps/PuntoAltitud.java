@@ -7,6 +7,8 @@ package hefesto.Maps;
  */
 public class PuntoAltitud {
     
+    public int estado = 0;  //0 normal, 1 fuego, 2 quemado
+    
     public double x;
     
     public double y;

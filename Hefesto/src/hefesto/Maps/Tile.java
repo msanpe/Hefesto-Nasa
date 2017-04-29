@@ -16,6 +16,8 @@ import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static hefesto.Maps.googleMapsCoonector.staticMapsKey;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 /**
  * @author Jose Vicente Lozano Copa
@@ -34,7 +36,7 @@ public class Tile {
     
     private int y = 0;
     
-    private byte[] imagen = null;
+    private BufferedImage imagen = null;
     
     private static final int MaxDownloadThread = 20;
     
@@ -89,7 +91,7 @@ public class Tile {
      * Si no existiese, se descarga de internet
      */
     private void refreshImage(){
-        imagen = new byte[0];
+        imagen = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
         while(downloadThread >= MaxDownloadThread){
             try {
                 sleep(1);
@@ -140,15 +142,15 @@ public class Tile {
      * Establece el array de bytes de la imagen del Tile
      * @param map_  Array de bytes de la imagen
      */
-    public void setImagen(byte[] map_){
-        if (map_ != null)    imagen = map_;
-    }
+    //public void setImagen(byte[] map_){
+    //    if (map_ != null)    imagen = map_;
+    //}
     
     /**
      * Retorna la imagen del Tile, si no se tubiese, se buscaria en cache y de no estar se descargaria de internet
      * @return Imagen del Tile
      */
-    public byte[] getImagen(){
+    public BufferedImage getImagen(){
         if (imagen == null) refreshImage();
         return imagen;
     }
@@ -232,13 +234,15 @@ public class Tile {
      * @param size  Tamaño de la imagen (128, 256, 512)
      * @return Imagen de la Tile
      */
-    public static byte[] getStaticMap(int X, int Y, int Zoom, int size){
+    public static BufferedImage getStaticMap(int X, int Y, int Zoom, int size){
         String url = "";
         try{
             String Fname = "imagen"+X+"_"+Y+"_"+Zoom+".png";
             File f = new File(Fname);
             if (f.exists()){
-                FileInputStream fis = new FileInputStream(f);
+                downloadThread--;
+                return ImageIO.read(f);
+               /* FileInputStream fis = new FileInputStream(f);
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
                 int nRead;
@@ -249,8 +253,10 @@ public class Tile {
                 }
                 buffer.flush();
                 fis.close();
+                
                 downloadThread--;
-                return buffer.toByteArray();                
+                return buffer.toByteArray();                */
+               
             }else{
                 url = "http://d.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/satellite.day/"+Zoom+"/"+X+"/"+Y+"/"+size+"/png8";
                 URL u = new URL(url);
@@ -272,14 +278,13 @@ public class Tile {
                 fo.write(salida);
                 fo.close();
                 System.out.println("Descargada "+Fname);
-                downloadThread--;
-                return salida;
+                return getStaticMap(X, Y, Zoom, size);
             }
         }catch(Exception e){
             System.out.println("Error descargando imagen " + url);
             System.out.println(e.toString());
             downloadThread--;
-            return new byte[0];
+            return new BufferedImage(1, 1, 1);
         }
     }
     
