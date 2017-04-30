@@ -229,21 +229,6 @@ public class Tile {
             if (f.exists()){
                 downloadThread--;
                 return ImageIO.read(f);
-               /* FileInputStream fis = new FileInputStream(f);
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-                int nRead;
-                byte[] data = new byte[16384];
-
-                while ((nRead = fis.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
-                }
-                buffer.flush();
-                fis.close();
-                
-                downloadThread--;
-                return buffer.toByteArray();                */
-               
             }else{
                 url = "http://d.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/satellite.day/"+Zoom+"/"+X+"/"+Y+"/"+size+"/png8";
                 URL u = new URL(url);

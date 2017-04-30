@@ -24,11 +24,11 @@ public class Hefesto {
 
     public static void MyMapsTest(){
         try{
-            //Mapa m = new Mapa(39.792520, -0.538822, 39.751799, -0.451287, 19);
+            //Mapa m = new Mapa(39.792520, -0.538822, 39.751799, -0.451287, 17);
             //m.refreshFromGoogle();
             //m.saveToFile("mimapa.map");
 
-            Mapa m2 = Mapa.loadFromFile("mapaMarines.map");
+            Mapa m2 = Mapa.loadFromFile("mimapa.map");
             //Mapa m2 = Mapa.loadFromFile("Hefesto/mapaMarines.map");
             m2.start();
             new MapJFrame(1536+17, 768+40, m2);
