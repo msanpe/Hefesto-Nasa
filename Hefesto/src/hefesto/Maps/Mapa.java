@@ -30,8 +30,8 @@ public class Mapa extends Thread{
 
     //Zoom del mapa
     private int mapZoom = 19;
-    
-    private static long Tiempo = 8000;
+
+    static long Tiempo = 4000;
 
     private boolean running = false;
 
