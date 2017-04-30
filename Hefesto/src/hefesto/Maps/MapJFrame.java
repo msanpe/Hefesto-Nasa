@@ -75,6 +75,10 @@ public class MapJFrame extends JFrame {
         paintSpeed(canvas);
         canvas.repaint();
 
+        List<PuntoAltitud> qem = map.getQuemado();
+        for (int i=0;i<qem.size();i++)
+            drawPoint(canvas, qem.get(i).x, qem.get(i).y, Color.BLACK);
+        
         List<PuntoAltitud> mas4 = map.getPrediccion(5);
         for (int i=0;i<mas4.size();i++){
             drawPoint(canvas, mas4.get(i).x, mas4.get(i).y, Color.decode(COLOR_05));
@@ -128,10 +132,10 @@ public class MapJFrame extends JFrame {
     }
 
     private void drawPoint(MapCanvas canvas, double x_, double y_, Color c) {
-        int size = 25;
+        int size = 6;
 
-        int x = (int)((x_ - map.mapa[0][0].getX())*256);
-        int y = (int)((y_ - map.mapa[0][0].getY())*256);
+        int x = (int)((x_ - map.mapa[0][0].getX())*64);
+        int y = (int)((y_ - map.mapa[0][0].getY())*64);
 
   
         BufferedImage bimage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);

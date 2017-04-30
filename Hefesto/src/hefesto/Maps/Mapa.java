@@ -31,7 +31,7 @@ public class Mapa extends Thread{
     //Zoom del mapa
     private int mapZoom = 19;
 
-    static long Tiempo = 4000;
+    static long Tiempo = 3000;
 
     private boolean running = false;
 
@@ -41,6 +41,8 @@ public class Mapa extends Thread{
     
     private List<PuntoAltitud> estadoActual;
 
+    private List<PuntoAltitud> quemados;
+    
     public List<PuntoAltitud> getEstadoActual() {
         return estadoActual;
     }
@@ -58,6 +60,7 @@ public class Mapa extends Thread{
 
     private void creaPredicciones(){
         predicciones = new ArrayList[numPredicciones];
+        quemados = new ArrayList<PuntoAltitud>();
         for (int i=0;i<numPredicciones;i++){
             predicciones[i] = new ArrayList<PuntoAltitud>();
         }
@@ -235,10 +238,13 @@ public class Mapa extends Thread{
     
     public List<PuntoAltitud> iniciaFuegoActual() {           
         Random rand = new Random();
-        double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
-        double randCordY = rand.nextDouble()*filas + mapa[0][0].getY();
+       // double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
+        //double randCordY = rand.nextDouble()*filas + mapa[0][0].getY();
         List<PuntoAltitud> list = new ArrayList<>();
         PuntoAltitud punto = mapa[2][5].getPunto(5, 5);
+        punto.estatus = estado.ardiendo;
+        list.add(punto);
+        punto = mapa[2][5].getPunto(6, 5);
         punto.estatus = estado.ardiendo;
         list.add(punto);
         
@@ -270,13 +276,17 @@ public class Mapa extends Thread{
         actualizarMapaZonaAfectada();
         estadoActual = predicciones[1];
         System.out.println("Fuegos de estadoactual: " + estadoActual.size());
-
     }
 
+    public List<PuntoAltitud> getQuemado(){
+        return quemados;
+    }
+    
     private void actualizarMapaZonaAfectada(){
 
         for (int i=0;i<predicciones[0].size();i++){
             getPuntoAltitud( ((PuntoAltitud)predicciones[0].get(i)).x, ((PuntoAltitud)predicciones[0].get(i)).y).estatus = estado.quemado;
+            quemados.add(   (PuntoAltitud)predicciones[0].get(i)  );
             predicciones[1].remove(((PuntoAltitud)predicciones[0].get(i) ));
         }
         for (int i=0;i<predicciones[1].size();i++){

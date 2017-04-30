@@ -280,6 +280,9 @@ public class Tile {
     }
 
     PuntoAltitud getPuntoAltitud(double x, double y) {
+        if (x < this.x || x >= this.x +1 ) return new PuntoAltitud(x, y); 
+        if (y < this.y || y >= this.y +1 ) return new PuntoAltitud(x, y); 
+
         double decx = (x - (int)x);
         double decy = (y - (int)y);
         int col = (int)Math.round(resolucionAltitud * decx);
