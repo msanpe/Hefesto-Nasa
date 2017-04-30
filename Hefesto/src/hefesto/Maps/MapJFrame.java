@@ -14,11 +14,11 @@ import java.awt.image.BufferedImage;
  * @author Jose Vicente Lozano Copa
  */
 public class MapJFrame extends JFrame {
-    private static final String COLOR_01 = "#F44336";
-    private static final String COLOR_02 = "#FF5722";
-    private static final String COLOR_03 = "#FF9800";
-    private static final String COLOR_04 = "#FFD54F";
-    private static final String COLOR_05 = "#FFF176";
+    private static final Color COLOR_01 = new Color(250, 23, 0, 188);
+    private static final Color COLOR_02 = new Color(255, 87, 34, 214);
+    private static final Color COLOR_03 = new Color(255, 152, 0, 197);
+    private static final Color COLOR_04 = new Color(255, 213, 79, 192);
+    private static final Color COLOR_05 = new Color(255, 241, 118, 221);
 
     private Mapa map;
     private int x_offset, y_offset;
@@ -78,25 +78,25 @@ public class MapJFrame extends JFrame {
         List<PuntoAltitud> qem = map.getQuemado();
         for (int i=0;i<qem.size();i++)
             drawPoint(canvas, qem.get(i).x, qem.get(i).y, Color.BLACK);
-        
+
         List<PuntoAltitud> mas4 = map.getPrediccion(5);
         for (int i=0;i<mas4.size();i++){
-            drawPoint(canvas, mas4.get(i).x, mas4.get(i).y, Color.decode(COLOR_05));
+            drawPoint(canvas, mas4.get(i).x, mas4.get(i).y, COLOR_05);
         }
         List<PuntoAltitud> mas3 = map.getPrediccion(4);
         for (int i=0;i<mas3.size();i++){
-            drawPoint(canvas, mas3.get(i).x, mas3.get(i).y, Color.decode(COLOR_04));
+            drawPoint(canvas, mas3.get(i).x, mas3.get(i).y, COLOR_04);
         }
         List<PuntoAltitud> mas2 = map.getPrediccion(3);
         for (int i=0;i<mas2.size();i++){
-            drawPoint(canvas, mas2.get(i).x, mas2.get(i).y, Color.decode(COLOR_03));
+            drawPoint(canvas, mas2.get(i).x, mas2.get(i).y, COLOR_03);
         }
         List<PuntoAltitud> mas1 = map.getPrediccion(2);
         for (int i=0;i<mas1.size();i++){
-            drawPoint(canvas, mas1.get(i).x, mas1.get(i).y, Color.decode(COLOR_02));
+            drawPoint(canvas, mas1.get(i).x, mas1.get(i).y, COLOR_02);
         }
         for (int i=0;i<map.getEstadoActual().size();i++){
-            drawPoint(canvas, map.getEstadoActual().get(i).x, map.getEstadoActual().get(i).y, Color.decode(COLOR_01));
+            drawPoint(canvas, map.getEstadoActual().get(i).x, map.getEstadoActual().get(i).y, COLOR_01);
         }
         
     }
@@ -109,7 +109,7 @@ public class MapJFrame extends JFrame {
         g2d.drawImage(canvas.imagen, 0, 0, null);
         g2d.setPaint(Color.WHITE);
         g2d.setFont(new Font("Serif", Font.BOLD, 40));
-        String s = "Tiempo x " + 60/(Mapa.Tiempo/1000) + "\n";
+        String s = "Tiempo x " + 60/(Mapa.Tiempo/1000f) + "\n";
         s = getWindDegrees(s);
         FontMetrics fm = g2d.getFontMetrics();
         int x = 15, y = 0;
@@ -124,7 +124,7 @@ public class MapJFrame extends JFrame {
     private String getWindDegrees(String s) {
         try {
             Weather weather = Weather.getGson();
-            s += "Dirección viento: " + weather.getWind_dir();
+            s += "Dirección viento: " + /*weather.getWind_dir()*/ "SE";
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -132,11 +132,10 @@ public class MapJFrame extends JFrame {
     }
 
     private void drawPoint(MapCanvas canvas, double x_, double y_, Color c) {
-        int size = 6;
+        int size = 7;
 
         int x = (int)((x_ - map.mapa[0][0].getX())*64);
         int y = (int)((y_ - map.mapa[0][0].getY())*64);
-
   
         BufferedImage bimage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = bimage.createGraphics();

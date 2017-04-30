@@ -33,7 +33,7 @@ public class MapCanvas extends Canvas{
         margeny = Math.round(HEIGHT/2) * -1;
 
         setPreferredSize(size);
-        imagen = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        imagen = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
     
     public void paint(BufferedImage img, int offx, int offy){
