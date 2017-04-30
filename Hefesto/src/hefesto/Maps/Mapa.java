@@ -66,7 +66,19 @@ public class Mapa extends Thread{
         }
     }
     
-    
+    public List<FirePointForJSON> puntosParaJSON(int maxIt){
+        List<FirePointForJSON> salida = new ArrayList<>();
+        for (int minuto=0;minuto<maxIt && minuto< numPredicciones;minuto++){
+            for (int i=0; i < predicciones[minuto].size();i++){
+                double x = ((PuntoAltitud)predicciones[minuto].get(i)).x;
+                double y = ((PuntoAltitud)predicciones[minuto].get(i)).y;
+                RealPoint rl = Tile.calcLonLatFromTile( x , y , mapZoom);
+                salida.add( new FirePointForJSON(rl.Longitud(), rl.Latitud(), minuto));
+            }
+        }
+        return salida;
+    }
+
     public Mapa(int fil, int col){
         creaPredicciones();
         filas = fil; columnas = col; ;
@@ -237,13 +249,14 @@ public class Mapa extends Thread{
     }
     
     public List<PuntoAltitud> iniciaFuegoActual() {           
-        Random rand = new Random();
-       // double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
+        //Random rand = new Random();
+        //double randCordX = rand.nextDouble()*columnas + mapa[0][0].getX();
         //double randCordY = rand.nextDouble()*filas + mapa[0][0].getY();
         List<PuntoAltitud> list = new ArrayList<>();
         PuntoAltitud punto = mapa[2][5].getPunto(5, 5);
         punto.estatus = estado.ardiendo;
         list.add(punto);
+
         punto = mapa[2][5].getPunto(6, 5);
         punto.estatus = estado.ardiendo;
         list.add(punto);
